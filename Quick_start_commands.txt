@@ -1,0 +1,34 @@
+# 1) Parse SemEval XMLs
+python -m tasp.semeval14_parser
+
+# 2) Train ATE
+python -m tasp.train_ate_deberta --epochs 5 --bs 8 --lr 3e-5 \
+  --outdir outputs/ate/deberta_v3_large
+
+# 3) Train ATSA
+python -m tasp.train_atsa_deberta --epochs 5 --bs 16 --lr 3e-5 \
+  --outdir outputs/atsa/deberta_v3_large
+
+# 4) Inference ATE→ATSA combined (SemEval test)
+python -m tasp.infer_pipeline_ate_atsa \
+  --input_jsonl data/semeval14/laptops_test.jsonl \
+  --ate_dir outputs/ate/deberta_v3_large \
+  --atsa_dir outputs/atsa/deberta_v3_large \
+  --out_path outputs/ate/infer_pairs.jsonl
+
+# 5) Train FLAN-T5-LoRA E2E
+python -m tasp.flan_t5_lora_train --epochs 3 \
+  --outdir outputs/e2e_t5/flan_t5_xl_lora
+
+# 6) Inference FLAN-T5-LoRA
+python -m tasp.flan_t5_lora_infer \
+  --input_jsonl data/semeval14/laptops_test.jsonl \
+  --base_model google/flan-t5-xl \
+  --lora_dir outputs/e2e_t5/flan_t5_xl_lora \
+  --out_path outputs/e2e_t5/infer_pairs.jsonl
+
+# 7) GPT baseline (set OPENAI_API_KEY in .env)
+python -m tasp.gpt_extractor \
+  --input_jsonl data/semeval14/laptops_test.jsonl \
+  --model gpt-4o-mini \
+  --out_path outputs/gpt/infer_pairs.jsonl
