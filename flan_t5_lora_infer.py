@@ -12,7 +12,8 @@ import re
 
 PROMPT_TEMPLATE = (
     "Instruction: Extract aspect-sentiment pairs from the sentence as a JSON list. "
-    "Each object in the list must have 'aspect' and 'sentiment' keys. "
+    "Each item in the list must be a valid JSON object enclosed in curly braces {{}}. " # <-- The fix is here
+    "Each object must have 'aspect' and 'sentiment' keys. "
     "The sentiment must be 'positive', 'negative', or 'neutral'. "
     "If no pairs are found, return an empty list [].\n\n"
     "## Examples:\n"
