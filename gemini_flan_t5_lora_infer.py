@@ -8,7 +8,7 @@ from tqdm import tqdm
 import re
 
 # Use the EXACT same prompt template as in training for consistency.
-# CORRECTED PROMPT_TEMPLATE (for flan_t5_lora_infer.py)
+# CORRECTED PROMPT_TEMPLATE (for gemini_flan_t5_lora_infer.py)
 
 PROMPT_TEMPLATE = (
     "Instruction: Extract aspect-sentiment pairs from the sentence as a JSON list. "
@@ -36,7 +36,7 @@ def read_jsonl(path: str):
             if line.strip():
                 yield json.loads(line)
 
-# In flan_t5_lora_infer.py, replace the old parse_json_output function
+# In gemini_flan_t5_lora_infer.py, replace the old parse_json_output function
 
 import re
 
