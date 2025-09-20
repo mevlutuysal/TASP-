@@ -1,10 +1,16 @@
-import json, itertools
-from collections import Counter
-p="outputs/mapping/pairs_canonical.jsonl"
-cats=Counter()
-with open(p,"r",encoding="utf-8") as f:
-    for line in f:
-        ex=json.loads(line)
-        for it in ex["pairs"]:
-            cats[it["canonical"]]+=1
-print(cats.most_common(15))
+import pandas as pd
+
+# Load your JSONL file
+df = pd.read_json("data/candidates_for_extraction.2016_2022.jsonl", lines=True)
+
+# List of brands to keep
+brands_to_keep = ["HP", "Acer", "ASUS", "Lenovo", "Dell"]
+
+# Filter the DataFrame
+filtered_df = df[df["brand"].isin(brands_to_keep)]
+
+# Save to a new JSONL file
+filtered_df.to_json("data/candidates_for_extraction_filtered_brands.jsonl", orient="records", lines=True)
+
+print("Saved filtered data to filtered_brands.jsonl")
+

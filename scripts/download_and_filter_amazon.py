@@ -57,7 +57,23 @@ def main():
     args = ap.parse_args()
 
     # Load dataset from Hugging Face (McAuley-Lab/Amazon-Reviews-2023)
-    ds = load_dataset("McAuley-Lab/Amazon-Reviews-2023", split=args.split, streaming=args.streaming)
+    # ds = load_dataset("McAuley-Lab/Amazon-Reviews-2023", split=args.split, streaming=args.streaming)
+
+    from huggingface_hub import list_repo_files
+
+    files = list_repo_files("McAuley-Lab/Amazon-Reviews-2023", repo_type="dataset")
+    all_parquets = [f"hf://datasets/McAuley-Lab/Amazon-Reviews-2023/{p}"
+                    for p in files if p.endswith(".parquet")]
+    filtered = [p for p in all_parquets if any(k in p.lower() for k in ("laptop", "computer", "computers", "pc"))]
+    parquet_files = filtered or all_parquets
+
+    if not parquet_files:
+        raise RuntimeError("No parquet files found — check repo name or filtering.")
+    print(f"Found {len(parquet_files)} parquet files. Example: {parquet_files[:3]}")
+
+    # No path filtering — row-level filter will handle laptops
+
+    ds = load_dataset("parquet", data_files=parquet_files, split=args.split, streaming=args.streaming)
 
     n_all, n_keep = 0, 0
     out_all = Path(args.out_all_jsonl)

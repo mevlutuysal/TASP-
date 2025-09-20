@@ -85,7 +85,10 @@ def main(a):
                 canon, reason = map_term(asp_norm, regex_map, syn_map, canon_labels, model, canon_embs, a.threshold)
                 new_pairs.append({"aspect": aspect, "sentiment": it.get("sentiment"), "canonical": canon})
                 rows.append({"aspect_raw": aspect, "aspect_norm": asp_norm, "canonical": canon, "reason": reason})
-            fout.write(json.dumps({"id": ex.get("id"), "text": ex.get("text"), "pairs": new_pairs}, ensure_ascii=False)+"\n")
+            # fout.write(json.dumps({"id": ex.get("id"), "text": ex.get("text"), "pairs": new_pairs}, ensure_ascii=False)+"\n")
+            ex["pairs"] = new_pairs
+            fout.write(json.dumps(ex, ensure_ascii=False) + "\n")
+
     # report
     df = pd.DataFrame(rows)
     df.to_csv(a.report_csv, index=False, encoding="utf-8")

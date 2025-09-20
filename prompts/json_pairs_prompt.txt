@@ -1,0 +1,11 @@
+You are an information extraction model.
+Extract every (aspect, sentiment) pair mentioned in the GIVEN SENTENCE.
+
+REQUIREMENTS:
+- Output ONLY a JSON array (no prose).
+- Each item must have exactly the keys: "aspect" (string copied verbatim from the sentence) and "sentiment" (one of: "positive","negative","neutral").
+- Copy aspect spans exactly as they appear in the sentence (case and punctuation preserved). Do NOT invent or normalize.
+- If no aspect is present, return [].
+
+GIVEN SENTENCE:
+{{sentence}}
